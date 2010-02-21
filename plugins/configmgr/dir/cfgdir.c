@@ -139,7 +139,7 @@ GWENHYWFAR_CB void GWEN_ConfigMgrDir_FreeData(GWEN_UNUSED void *bp, void *p) {
     while(lck) {
       GWEN_FSLOCK_RESULT res;
 
-      res=GWEN_FSLock_Unlock(lck);
+      res=GWEN_FSLock_ResultOk; //GWEN_FSLock_Unlock(lck);
       if (res!=GWEN_FSLock_ResultOk) {
 	DBG_INFO(GWEN_LOGDOMAIN, "Unable to unlock file [%s]: %d",
                  GWEN_FSLock_GetName(lck), res);
@@ -189,7 +189,7 @@ int GWEN_ConfigMgrDir__GetUniqueId(GWEN_CONFIGMGR *cfg,
   }
 
   lck=GWEN_FSLock_new(GWEN_Buffer_GetStart(nbuf), GWEN_FSLock_TypeFile);
-  res=GWEN_FSLock_Lock(lck, 60000, 0);
+  res=GWEN_FSLock_ResultOk; //GWEN_FSLock_Lock(lck, 60000, 0);
   if (res!=GWEN_FSLock_ResultOk) {
     DBG_ERROR(GWEN_LOGDOMAIN,
 	      "Could not lock group [%s]: %d",
@@ -217,7 +217,7 @@ int GWEN_ConfigMgrDir__GetUniqueId(GWEN_CONFIGMGR *cfg,
     DBG_ERROR(GWEN_LOGDOMAIN, "fopen(%s, \"w\"): %s",
 	      GWEN_Buffer_GetStart(nbuf),
 	      strerror(errno));
-    GWEN_FSLock_Unlock(lck);
+    //GWEN_FSLock_Unlock(lck);
     GWEN_FSLock_free(lck);
     GWEN_Buffer_free(nbuf);
     return GWEN_ERROR_LOCK;
@@ -227,13 +227,13 @@ int GWEN_ConfigMgrDir__GetUniqueId(GWEN_CONFIGMGR *cfg,
     DBG_ERROR(GWEN_LOGDOMAIN, "fopen(%s, \"w\"): %s",
 	      GWEN_Buffer_GetStart(nbuf),
 	      strerror(errno));
-    GWEN_FSLock_Unlock(lck);
+    //GWEN_FSLock_Unlock(lck);
     GWEN_FSLock_free(lck);
     GWEN_Buffer_free(nbuf);
     return GWEN_ERROR_LOCK;
   }
 
-  GWEN_FSLock_Unlock(lck);
+  //GWEN_FSLock_Unlock(lck);
   GWEN_FSLock_free(lck);
   GWEN_Buffer_free(nbuf);
 
@@ -462,7 +462,7 @@ int GWEN_ConfigMgrDir_LockGroup(GWEN_CONFIGMGR *cfg,
   }
 
   lck=GWEN_FSLock_new(GWEN_Buffer_GetStart(nbuf), GWEN_FSLock_TypeFile);
-  res=GWEN_FSLock_Lock(lck, 60000, 0);
+  res=GWEN_FSLock_ResultOk; //GWEN_FSLock_Lock(lck, 60000, 0);
   if (res!=GWEN_FSLock_ResultOk) {
     DBG_ERROR(GWEN_LOGDOMAIN,
 	      "Could not lock group [%s/%s]: %d",
@@ -503,7 +503,7 @@ int GWEN_ConfigMgrDir_UnlockGroup(GWEN_CONFIGMGR *cfg,
     return GWEN_ERROR_LOCK;
   }
 
-  res=GWEN_FSLock_Unlock(lck);
+  res=GWEN_FSLock_ResultOk; //GWEN_FSLock_Unlock(lck);
   if (res!=GWEN_FSLock_ResultOk) {
     DBG_ERROR(GWEN_LOGDOMAIN,
 	      "Could not unlock group [%s/%s]: %d",
@@ -589,7 +589,7 @@ int GWEN_ConfigMgrDir_DeleteGroup(GWEN_CONFIGMGR *cfg,
   }
 
   lck=GWEN_FSLock_new(GWEN_Buffer_GetStart(nbuf), GWEN_FSLock_TypeFile);
-  res=GWEN_FSLock_Lock(lck, 60000, 0);
+  res=GWEN_FSLock_ResultOk; //GWEN_FSLock_Lock(lck, 60000, 0);
   if (res!=GWEN_FSLock_ResultOk) {
     DBG_ERROR(GWEN_LOGDOMAIN,
 	      "Could not lock group [%s/%s]: %d",
@@ -601,7 +601,7 @@ int GWEN_ConfigMgrDir_DeleteGroup(GWEN_CONFIGMGR *cfg,
 
   unlink(GWEN_Buffer_GetStart(nbuf));
 
-  GWEN_FSLock_Unlock(lck);
+  //GWEN_FSLock_Unlock(lck);
   GWEN_FSLock_free(lck);
   GWEN_Buffer_free(nbuf);
 
