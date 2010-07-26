@@ -42,13 +42,13 @@ static void GWEN_LibFini(void) __attribute__((destructor));
 
 
 void GWEN_LibInit(void) {
-  int err;
+  /*int err;
 
   err=GWEN_Init();
   if (err) {
     fprintf(stderr, "Could not initialize Gwenhywfar, aborting\n");
     abort();
-  }
+  }*/
   /* fprintf(stderr, "Gwenhywfar initialized.\n"); */
 }
 

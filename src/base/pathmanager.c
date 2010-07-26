@@ -34,6 +34,10 @@
 #include <gwenhywfar/debug.h>
 #include <gwenhywfar/directory.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreFoundation/CFURL.h>
+#include <CoreFoundation/CFString.h>
+#include <CoreFoundation/CFStringEncodingExt.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -189,29 +193,31 @@ int GWEN_PathManager_AddRelPath(const char *callingLib,
   }
 
   case GWEN_PathManager_RelModeExe: {
-    int rv;
-
-    rv=GWEN_Directory_GetPrefixDirectory(cwd, sizeof(cwd)-1);
-    if (rv) {
-      DBG_INFO(GWEN_LOGDOMAIN, "here (%d)", rv);
-      return rv;
-    }
-    else {
-      GWEN_BUFFER *buf;
-
-      buf=GWEN_Buffer_new(0, 256, 0, 1);
-      GWEN_Buffer_AppendString(buf, cwd);
-      if (*pathValue!=GWEN_DIR_SEPARATOR)
-	GWEN_Buffer_AppendString(buf, GWEN_DIR_SEPARATOR_S);
-      GWEN_Buffer_AppendString(buf, pathValue);
-      DBG_INFO(GWEN_LOGDOMAIN,
-	       "Adding path [%s]",
-	       GWEN_Buffer_GetStart(buf));
-      rv=GWEN_PathManager_AddPath(callingLib, destLib, pathName,
-				  GWEN_Buffer_GetStart(buf));
-      GWEN_Buffer_free(buf);
-      return rv;
-    }
+       CFURLRef bundleResURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+       if (bundleResURL == NULL) return GWEN_ERROR_GENERIC;
+       bundleResURL = CFURLCopyAbsoluteURL(bundleResURL);
+       CFStringRef cfPath = CFURLCopyFileSystemPath(bundleResURL, kCFURLPOSIXPathStyle);
+       if (cfPath == NULL) return GWEN_ERROR_GENERIC;
+       CFIndex maxlen = CFStringGetMaximumSizeOfFileSystemRepresentation(cfPath);
+       char path[maxlen + 1];
+       Boolean ok = CFStringGetFileSystemRepresentation(cfPath, path, maxlen);
+       if (!ok) return GWEN_ERROR_GENERIC;
+       
+       char * frameworkPath = "/Frameworks/AqBanking";
+       GWEN_BUFFER * buf = GWEN_Buffer_new(0, maxlen + strlen(frameworkPath) + strlen(pathValue) + strlen(GWEN_DIR_SEPARATOR_S) + 1, 0, 1);
+       GWEN_Buffer_AppendString(buf, path);
+       GWEN_Buffer_AppendString(buf, frameworkPath);
+       
+       if (*pathValue!=GWEN_DIR_SEPARATOR)
+           GWEN_Buffer_AppendString(buf, GWEN_DIR_SEPARATOR_S);
+       GWEN_Buffer_AppendString(buf, pathValue);
+       DBG_INFO(GWEN_LOGDOMAIN,
+            "Adding path [%s]",
+            GWEN_Buffer_GetStart(buf));
+       int rv = GWEN_PathManager_AddPath(callingLib, destLib, pathName,
+                       GWEN_Buffer_GetStart(buf));
+       GWEN_Buffer_free(buf);
+       return rv;
   }
 
   case GWEN_PathManager_RelModeHome: {

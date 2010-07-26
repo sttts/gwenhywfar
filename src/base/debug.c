@@ -314,7 +314,7 @@ void DBG_ERROR(const char *dbg_logger, const char *format, ...) {
   va_start(args, format);
   vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
   dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-  GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelError, dbg_buffer);
+  GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Error, dbg_buffer);
   va_end(args);
 }
 
@@ -324,43 +324,43 @@ void DBG_WARN(const char *dbg_logger, const char *format, ...) {
   va_start(args, format);
   vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
   dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-  GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelWarning, dbg_buffer);
+  GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Warning, dbg_buffer);
   va_end(args);
 }
 
 void DBG_NOTICE(const char *dbg_logger, const char *format, ...) {
-  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevelNotice) {
+  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevel_Notice) {
     va_list args;
     char dbg_buffer[256]; 
     va_start(args, format);
     vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
     dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelNotice, dbg_buffer);
+    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Notice, dbg_buffer);
     va_end(args);
   }
 }
 
 void DBG_INFO(const char *dbg_logger, const char *format, ...) {
-  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevelInfo) {
+  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevel_Info) {
     va_list args;
     char dbg_buffer[256]; 
     va_start(args, format);
     vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
     dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelInfo, dbg_buffer);
+    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Info, dbg_buffer);
     va_end(args);
   }
 }
 
 void DBG_DEBUG(const char *dbg_logger, const char *format, ...) {
 # ifndef DISABLE_DEBUGLOG
-  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevelDebug) {
+  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevel_Debug) {
     va_list args;
     char dbg_buffer[256]; 
     va_start(args, format);
     vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
     dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelDebug, dbg_buffer);
+    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Debug, dbg_buffer);
     va_end(args);
   }
 # endif /* DISABLE_DEBUGLOG */
@@ -368,13 +368,13 @@ void DBG_DEBUG(const char *dbg_logger, const char *format, ...) {
 
 void DBG_VERBOUS(const char *dbg_logger, const char *format, ...) {
 # ifndef DISABLE_DEBUGLOG
-  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevelVerbous) {
+  if (GWEN_Logger_GetLevel(dbg_logger)>=GWEN_LoggerLevel_Verbous) {
     va_list args;
     char dbg_buffer[256]; 
     va_start(args, format);
     vsnprintf(dbg_buffer, sizeof(dbg_buffer)-1, format, args);
     dbg_buffer[sizeof(dbg_buffer)-1] = 0; 
-    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevelVerbous, dbg_buffer);
+    GWEN_Logger_Log(dbg_logger, GWEN_LoggerLevel_Verbous, dbg_buffer);
     va_end(args);
   }
 # endif /* DISABLE_DEBUGLOG */
