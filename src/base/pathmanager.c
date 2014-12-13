@@ -330,10 +330,21 @@ int GWEN_PathManager_InsertRelPath(const char *callingLib,
       return rv;
     }
     else {
-      GWEN_BUFFER *buf;
+       CFURLRef bundleResURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+       if (bundleResURL == NULL) return GWEN_ERROR_GENERIC;
+       bundleResURL = CFURLCopyAbsoluteURL(bundleResURL);
+       CFStringRef cfPath = CFURLCopyFileSystemPath(bundleResURL, kCFURLPOSIXPathStyle);
+       if (cfPath == NULL) return GWEN_ERROR_GENERIC;
+       CFIndex maxlen = CFStringGetMaximumSizeOfFileSystemRepresentation(cfPath);
+       char path[maxlen + 1];
+       Boolean ok = CFStringGetFileSystemRepresentation(cfPath, path, maxlen);
+       if (!ok) return GWEN_ERROR_GENERIC;
+       
+       char * frameworkPath = "/Frameworks/AqBanking";
+       GWEN_BUFFER * buf = GWEN_Buffer_new(0, maxlen + strlen(frameworkPath) + strlen(pathValue) + strlen(GWEN_DIR_SEPARATOR_S) + 1, 0, 1);
+       GWEN_Buffer_AppendString(buf, path);
+       GWEN_Buffer_AppendString(buf, frameworkPath);
 
-      buf=GWEN_Buffer_new(0, 256, 0, 1);
-      GWEN_Buffer_AppendString(buf, cwd);
       if (*pathValue!=GWEN_DIR_SEPARATOR)
 	GWEN_Buffer_AppendString(buf, GWEN_DIR_SEPARATOR_S);
       GWEN_Buffer_AppendString(buf, pathValue);
